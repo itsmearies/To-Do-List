@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <link rel="stylesheet" href="	https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <title>To Do List</title>
+
+    <style>
+        :root{
+            --primary-background: white;
+            --primary-text-color: black;
+            --secondary-text-color: gray;
+        }
+        .dark-mode{
+            --primary-background: black;
+            --primary-text-color: white;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+            transition: all 0.1s linear;
+        }
+        body{
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--primary-background);
+            overflow: hidden;
+        }
+        .container{
+            width: 500px;
+            color: var(--primary-text-color);
+            background-color: rgba(220, 220, 220, 0.1);
+            box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+        }
+        #icon{
+            color: var(--primary-text-color);
+        }
+        #list li{
+            display: flex;
+            justify-content: space-between;
+            list-style: none;
+            margin-top: 1rem;
+            color: var(--secondary-text-color);
+        }
+        #list button{
+            border: none;
+            border-radius: 50%;
+            padding: .3rem;
+        }
+        .image-wrapper p{
+            color: var(--secondary-text-color);
+        }
+        .container img, img{
+            width: 200px;
+            height: auto;
+        }
+
+        ::placeholder{
+            color: var(--secondary-text-color) !important;
+        }
+        #warning{
+            font-size: 13px;
+        }
+        #image-animation{
+            position: absolute;
+            bottom: 0;
+            transform: translateY(1000%);
+            transition: transform .3s ease-in-out;
+        }
+        .animate-image{
+            transform: translateY(0) !important;   
+        }
+
+           
+    </style>
+
+</head>
+<body class="d-flex justify-content-center align-items-center p-4">
+    <div class="container p-3 rounded-3">
+        <form>
+            <div class="form-header d-flex justify-content-between">
+                <label class="fw-bold fs-4 my-2">To Do List</label>
+                <button id="color-mode" class="btn p-0 border-0">
+                    <i class='bx bx-sun fs-2' id="icon"></i>
+                </button>
+            </div>
+            <div class="user-input my-2 d-flex gap-3">
+                <input type="text" class="form-control bg-transparent text-success" autocomplete="off" placeholder="Enter here..." id="list-value">
+                <button id="add" class="btn bg-primary text-white border-0">Add</button>
+            </div> 
+        </form>
+        <span class="text-danger px-1 d-none" id="warning">You've reached the maximum length</span>
+        <ul id="list" class="px-2 mt-3">My List</ul>
+        <div class="image-wrapper d-flex flex-column align-items-center">
+            <img src="Online world-amico.svg">
+            <p class="mt-2">Empty</p>
+        </div>
+    </div>
+
+    <img src="caloocan-boy.png" alt="" id="image-animation">
+
+    <script>
+        const todoList = document.getElementById('list');
+        const inputList = document.getElementById('list-value');
+        const add = document.getElementById('add');
+        const colorMode = document.getElementById('color-mode');
+        const icon = document.getElementById('icon');
+        const image = document.querySelector('.image-wrapper');
+        const list = document.getElementsByTagName('li');
+        const warning = document.getElementById('warning');
+
+        add.addEventListener('click', (event) => {
+            event.preventDefault();
+            const listValue = inputList.value;
+
+            const createElement = document.createElement('li');
+            createElement.textContent = listValue;
+
+            const createButton = document.createElement('button');
+            createButton.classList.add('bx', 'bx-x', 'bg-danger', 'text-white');
+
+            createButton.addEventListener('click', () => {
+                todoList.removeChild(createElement);
+                
+                if(list.length === 0){
+                    console.log(list.length);
+                    image.classList.remove('d-none');
+                    image.classList.add('d-block');
+                }  
+
+                checkLength();
+            })
+            
+            todoList.appendChild(createElement);
+            createElement.appendChild(createButton);
+            clearInput();
+            checkInputStatus();
+            removeImage();
+            checkLength();
+            console.log(list.length);
+        })
+
+        colorMode.addEventListener('click', (event) => {
+            event.preventDefault();
+            icon.classList.toggle('bx-moon');
+            icon.classList.toggle('bx-sun');
+            document.body.classList.toggle('dark-mode');
+
+            const imageAnimation = document.getElementById('image-animation');
+            imageAnimation.classList.toggle('animate-image');
+        })
+
+        inputList.addEventListener('input', checkInputStatus);
+
+        function clearInput () {
+            inputList.value = '';
+        }
+
+        function checkInputStatus () {
+            inputList.value === '' ? add.disabled = true : add.disabled = false;
+            checkLength();
+        }
+
+        function removeImage () {
+            image.classList.remove('d-block');
+            image.classList.add('d-none');
+            
+        }
+
+        function checkLength () {
+            if(list.length >= 5 ){
+                warning.classList.add('d-block');
+                warning.classList.remove('d-none');
+                add.disabled = true;
+            }else{
+                warning.classList.add('d-none');    
+                warning.classList.remove('d-block'); 
+            }
+        }
+
+        checkInputStatus();
+
+    </script>
+    
+</body>
+</html>
